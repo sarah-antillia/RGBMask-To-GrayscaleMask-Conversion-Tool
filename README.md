@@ -3,10 +3,10 @@
 This is a Python Conversion Tool to convert RGBMask to GrayScaleMask for Image Segmentation.<br>
 
 <h3>1. RGB2GrayscaleMaskConverter</h3>
-This <a href="./RGB2GrayscaleMaskConverter,py">RGB2GrayscaleMaskConverter,py</a> is a simple Python script
+This <a href="./RGB2GrayscaleMaskConverter.py">RGB2GrayscaleMaskConverter,py</a> is a simple Python script
 to convert a RGB-MaskDataset to a Grayscale-MaskDataset. <br>
-It is easily customizable by a <a href=".grayscale_conversin.config">configuration file.<br>
-In the <a href="./RGB2GrayscaleMaskConverter,py">RGB2GrayscaleMaskConverter,py</a>, we convert a RGBMask-Dataset
+It is easily customizable by a <a href="./grayscale_conversin.config">configuration file.</a><br>
+In the <a href="./RGB2GrayscaleMaskConverter.py">RGB2GrayscaleMaskConverter,py</a>, we convert a RGBMask-Dataset
 to a GrayscaleMask-Datatset in the following way.<br>
 
 <pre>
