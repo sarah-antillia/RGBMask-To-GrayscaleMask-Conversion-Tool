@@ -21,7 +21,7 @@ gray = 0.299 * R + 0.587 * G + 0.114 * B
 </pre>   
 On detail of the parameter, please refer to 
 <a href="https://stackoverflow.com/questions/687261/converting-rgb-to-grayscale-intensity">
-converting-rgb-to-grayscale-intensity
+Converting RGB to grayscale/intensity
 </a>
 
 Except from the web-site above.<br>
