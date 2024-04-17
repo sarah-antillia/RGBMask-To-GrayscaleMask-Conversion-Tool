@@ -14,7 +14,7 @@ to a GrayscaleMask-Datatset in the following way.<br>
 2. Split the mutli-class-rgb-mask to some multi-class-grayscale-masks depending on the number of classes for segemetation.
 3. Merge the multiple grayscale-masks to a single grayscale mask. 
 4. Save the merged grayscale-masks to a file to an ouput_folder.
-</pre>]
+</pre>
 We use the following grayscaling parameter to conver a set of (R,G, B) pixel in a rgb-mask to a grayscale intensity.<br>
 <pre>
 gray = 0.299 * R + 0.587 * G + 0.114 * B
