@@ -105,8 +105,8 @@ Please run the following command to convert a RGB-MaskDataset to a Grayscale-Mas
 ;grayscale_converter.config
 ; Copyright (C) antillia.com
 ; 2024/04/16
-; This is an exaample of mini-test dataset of PanNuk mdataset
-;On the mask_colors above, please see https://github.com/sarah-antillia/ImageMask-Dataset-PanNuke
+; This is an exaample of mini-test dataset of PanNuk dataset
+;On the mask_colors in this config file, please see https://github.com/sarah-antillia/ImageMask-Dataset-PanNuke
 
 [grayscale_converter]
 image_width  = 512
