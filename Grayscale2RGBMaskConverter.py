@@ -15,10 +15,10 @@
 
 # Grayscale2RGBMaskConverter.py
 
-# 1 Read a mutli-class-rgb-mask file.
-# 2 Split the mutli-class-rgb-mask to some multi-class-grayscale-masks.
-# 3 Merge the grayscale-masks to one grayscale mask. 
-# 4 Save the merged grayscale-masks to a file.
+# 1 Read a multi-class-gray-mask file.
+# 2 Split the mutli-class-gray-mask to some rgb-masks.
+# 3 Merge the rgb-masks to a single rgb mask. 
+# 4 Save the merged rgb-masks to a file.
 
 # https://stackoverflow.com/questions/687261/converting-rgb-to-grayscale-intensity
 
