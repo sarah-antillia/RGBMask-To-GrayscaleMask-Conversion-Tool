@@ -53,6 +53,7 @@ from ConfigParser import ConfigParser
 class RGB2GrayscaleMaskConverter:
   # Section name in a config_file.
   GRAYSCALE_CONVERTER = "grayscale_converter"
+  PREPROCESS          = "preprocess"
 
   def __init__(self, config_file):
     self.config      = ConfigParser(config_file)
@@ -62,7 +63,12 @@ class RGB2GrayscaleMaskConverter:
     self.class_names = self.config.get(self.GRAYSCALE_CONVERTER, "class_names")
     self.mask_colors = self.config.get(self.GRAYSCALE_CONVERTER, "mask_colors")
 
-    # R, G, B intensity for converting rgb to grayscale: CCIR 601
+    # Preprocessing experiment to adjust the original rgb_mask to a better rgb_mask. 
+    self.preprocess  = self.config.get(self.GRAYSCALE_CONVERTER, self.PREPROCESS, dvalue=False)
+    self.alpha       = self.config.get(self.PREPROCESS, "alpha", dvalue=3.0)
+    self.beta        = self.config.get(self.PREPROCESS, "beta",  dvalue=0)
+
+    # (R, G, B) intensity for converting rgb to grayscale: CCIR 601
     self.grayscaling = self.config.get(self.GRAYSCALE_CONVERTER, "grayscaling", dvalue=(0.299, 0.587, 0.114))
 
     self.color_order = self.config.get(self.GRAYSCALE_CONVERTER, "color_order", dvalue="bgr")
@@ -77,13 +83,20 @@ class RGB2GrayscaleMaskConverter:
     for mask_file in mask_files:
       self.convert_one(mask_file)
 
+  def adjust(self, mask, alpha=1.0, beta=0.0):
+    mask = alpha * mask + beta
+    return np.clip(mask, 0, 255).astype(np.uint8)
+
   def convert_one(self, mask_file):
     print("=== convert_one {}".format(mask_file))
     mask = cv2.imread(mask_file)
     basename = os.path.basename(mask_file)
-
-    if len(mask.shape) == 3:
-      h, w, c = mask.shape[:3]
+    # Experimental
+    if self.preprocess:
+      mask = self.adjust(mask, alpha=3.0, beta=0.0)
+  
+    h, w = mask.shape[:2]
+    # create an empty grayscale_mask
     merged_grayscale_mask = np.zeros((w, h, 1), np.uint8)
 
     for color in self.mask_colors:
@@ -92,22 +105,23 @@ class RGB2GrayscaleMaskConverter:
 
     output_filepath = os.path.join(self.output_dir, basename)
     cv2.imwrite(output_filepath, merged_grayscale_mask )
-    print("--- merged_grayscale_mask {}".format(merged_grayscale_mask.shape))
+    #print("--- merged_grayscale_mask {}".format(merged_grayscale_mask.shape))
     print("--- Saved {}".format(output_filepath))
       
-
   def create_categorized_grayscale_mask(self, mask, color):
     (h, w, c) = (0, 0, 0)
     if len(mask.shape) == 3:
       h, w, c = mask.shape[:3]
 
-    # create Grayscale 1 channel black background 
-    back = np.zeros((w, h, 1), np.uint8)
+    # create a grayscale 1 channel black background 
+    grayscale_mask = np.zeros((w, h, 1), np.uint8)
     # bgr
     (b, g, r) = color
+    condition = (mask[..., 0] == b) & (mask[..., 1] == g) & (mask[..., 2] == r)
     if self.color_order == "rgb":
       (r, b, g) = color
-    condition = (mask[..., 0] == b) & (mask[..., 1] == g) & (mask[..., 2] == r)
+      condition = (mask[..., 0] == r) & (mask[..., 1] == g) & (mask[..., 2] == b)
+
     # https://stackoverflow.com/questions/687261/converting-rgb-to-grayscale-intensity
     # See also: 
     # https://en.wikipedia.org/wiki/Luma_(video)
@@ -126,8 +140,8 @@ class RGB2GrayscaleMaskConverter:
     # BT. 709
     #gray = int(0.2126 * r + 0.7152 * g + 0.0722 * b)
 
-    back[condition] = [gray]    
-    return back
+    grayscale_mask[condition] = [gray]    
+    return grayscale_mask
 
 
 if __name__ == "__main__":

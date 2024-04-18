@@ -1,12 +1,13 @@
-<h2>RGBMask-To-GrayscaleMask-Conversion-Tool</h2>
+<h2>RGBMask-To-GrayscaleMask-Conversion-Tool (Updated: 2024/04/19)</h2>
 
 This is a Python Conversion Tool to convert RGBMask to GrayScaleMask for Image Segmentation.<br>
+<li>2024/04/19: Added <a href="./Grayscale2RGBMaskConverter.py">Grayscale2RGBMaskConverter.py</a> to revert Grayscale-Maskdataset to RGB-MaskDataset</li>
 
 <h3>1. RGB2GrayscaleMaskConverter</h3>
-This <a href="./RGB2GrayscaleMaskConverter.py">RGB2GrayscaleMaskConverter,py</a> is a simple Python script
+This <a href="./RGB2GrayscaleMaskConverter.py">RGB2GrayscaleMaskConverter.py</a> is a simple Python script
 to convert a RGB-MaskDataset to a Grayscale-MaskDataset. <br>
 It is easily customizable by a <a href="./grayscale_converter.config">grayscale_converter.config.</a><br>
-In the <a href="./RGB2GrayscaleMaskConverter.py">RGB2GrayscaleMaskConverter,py</a>, we convert a RGBMask-Dataset
+In the <a href="./RGB2GrayscaleMaskConverter.py">RGB2GrayscaleMaskConverter.py</a>, we convert a RGBMask-Dataset
 to a GrayscaleMask-Datatset in the following way.<br>
 
 <pre>
@@ -102,15 +103,15 @@ Please run the following command to convert a RGB-MaskDataset to a Grayscale-Mas
 </pre>
 , where grayscale_converter.config is the following.<br>
 <pre>
-;grayscale_converter.config
-; Copyright (C) antillia.com
 ; 2024/04/16
-; This is an exaample of mini-test dataset of PanNuk dataset
-;On the mask_colors in this config file, please see https://github.com/sarah-antillia/ImageMask-Dataset-PanNuke
+; This is an exaample of mini-test dataset of PanNuke MaskDataset
+;On the mask_colors above, please see https://github.com/sarah-antillia/ImageMask-Dataset-PanNuke
 
 [grayscale_converter]
 image_width  = 512
 image_height = 512
+preprocess   = False
+
 color_order  = "bgr"
 masks_dir   = "./PanNuke/sample_masks/"
 output_dir   = "./Grayscaled_masks/"
@@ -123,12 +124,74 @@ grayscaling  = (0.299, 0.587, 0.114)
 
 mask_colors = [(0, 0, 0), (  0, 255,   0),  (255,   0,   0),  (  0,   0, 255),  (255, 255,   0), (  0, 255, 255),]
 classes     = ["Background", "Neoplastic cells", "Inflammatory", "Connective/Soft tissue cells","Dead Cells", "Epithelial"]   
+
+;Experimental
+[preprocess]
+alpha  = 3.0
+beta   = 0
 </pre>
 
-
-<b>PanNuke RGB Masks</b><br>
+<hr>
+<b>Input: PanNuke RGB Masks</b><br>
 <img src="./asset/PanNuke_sample_masks.png" width=1024 height="auto"><br>
 
-<b>Converted Grayscale Masks</b><br>
+<b>Output: Converted Grayscale Masks from RGB Masks</b><br>
 <img src="./asset/Grayscaled_masks.png" width=1024 height="auto"><br>
  
+ 
+<!--
+ -->
+ 
+
+<h3>4. Revert GrayscaleMaskDataset to RGBMaskDataset </h3>
+Please run the following command to revert a Grayscaled-MaskDataset to a RGB-MaskDataset.<br>
+<pre>
+>python Grayscale2RGBMaskConverter.py ./grayscale2rgb_converter.config
+</pre>
+, where grayscale2rgb_converter.config is the following.<br>
+<pre>
+;grayscale2rgb_converter.config
+; Copyright (C) antillia.com
+; 2024/04/19
+; This is an exaample of mini-test dataset of PanNuke MaskDataset
+;On the mask_colors above, please see https://github.com/sarah-antillia/ImageMask-Dataset-PanNuke
+
+[grayscale2rgb_converter]
+image_width  = 512
+image_height = 512
+
+color_order  = "bgr"
+;masks_dir   = "./PanNuke/sample_masks/"
+masks_dir    = "./Grayscaled_masks/"
+output_dir   = "./Colored_masks"
+
+; R, G, B intensity for converting rgb to grayscale: CCIR 601
+grayscaling  = (0.299, 0.587, 0.114)
+
+; BT. 709
+;grayscaling  = (0.2126, 0.7152, 0.0722)
+
+mask_colors = [(0, 0, 0), ( 0, 255,  0),  (255,  0,  0),  ( 0,  0, 255),  (255, 255,  0), ( 0, 255, 255),]
+classes     = ["Background", "Neoplastic cells", "Inflammatory", "Connective/Soft tissue cells","Dead Cells", "Epithelial"]   
+</pre>
+<hr>
+<b>Input: Converted Grayscale Masks from RGB Mask</b><br>
+<img src="./asset/Grayscaled_masks.png" width=1024 height="auto"><br>
+ 
+
+<b>Output: Reverted RGB Masks from Grayscale Masks</b><br>
+<img src="./asset/Colorized_masks.png" width=1024 height="auto"><br>
+ 
+<h2>References</h2>
+
+<b>1. PanNuke: An Open Pan-Cancer Histology Dataset for Nuclei Instance Segmentation and Classification</b><br>
+Gamper, Jevgenij and Koohbanani, Navid Alemi and Benet, Ksenija and Khuram, Ali and Rajpoot, Nasir<br>
+<pre>
+https://academictorrents.com/details/99f2c7b57b95500711e33f2ee4d14c9fd7c7366c
+</pre>
+<b>2. ImageMask-Dataset-PanNuke</b><br>
+Toshiyuki Arai antillia.com
+<pre>
+https://github.com/sarah-antillia/ImageMask-Dataset-PanNuke
+</pre>
+
